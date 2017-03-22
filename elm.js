@@ -9587,6 +9587,7 @@ var _user$project$PhotoGroove$FilterInfo = F3(
 var _user$project$PhotoGroove$Large = {ctor: 'Large'};
 var _user$project$PhotoGroove$Medium = {ctor: 'Medium'};
 var _user$project$PhotoGroove$Small = {ctor: 'Small'};
+var _user$project$PhotoGroove$Flames = {ctor: 'Flames'};
 var _user$project$PhotoGroove$Ripple = {ctor: 'Ripple'};
 var _user$project$PhotoGroove$Noise = {ctor: 'Noise'};
 var _user$project$PhotoGroove$Hue = {ctor: 'Hue'};
@@ -9604,7 +9605,11 @@ var _user$project$PhotoGroove$initialModel = {
 			_1: {
 				ctor: '::',
 				_0: A3(_user$project$PhotoGroove$FilterInfo, _user$project$PhotoGroove$Noise, 'Noise', 0),
-				_1: {ctor: '[]'}
+				_1: {
+					ctor: '::',
+					_0: A3(_user$project$PhotoGroove$FilterInfo, _user$project$PhotoGroove$Flames, 'Flames', 0),
+					_1: {ctor: '[]'}
+				}
 			}
 		}
 	}

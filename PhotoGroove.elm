@@ -135,6 +135,7 @@ initialModel =
         [ FilterInfo Hue "Hue" 0
         , FilterInfo Ripple "Ripple" 0
         , FilterInfo Noise "Noise" 0
+        , FilterInfo Flames "Flames" 0
         ]
     }
 
@@ -158,6 +159,7 @@ type Filter
     = Hue
     | Noise
     | Ripple
+    | Flames
 
 
 type Msg
