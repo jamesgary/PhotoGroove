@@ -41,7 +41,11 @@ view model =
         , button
             [ onClick SurpriseMe ]
             [ text "Surprise Me!" ]
-        , div [ class "filters" ] (List.map viewFilter model.filters)
+        , div [ class "filters" ]
+            [ viewFilter "Hue" SetHue model.hue
+            , viewFilter "Ripple" SetRipple model.ripple
+            , viewFilter "Noise" SetNoise model.noise
+            ]
         , h3 [] [ text "Thumbnail Size:" ]
         , div [ id "choose-size" ]
             (List.map viewSizeChooser [ Small, Medium, Large ])
@@ -51,12 +55,12 @@ view model =
         ]
 
 
-viewFilter : FilterInfo -> Html Msg
-viewFilter filterInfo =
+viewFilter : String -> (Int -> Msg) -> Int -> Html Msg
+viewFilter name toMsg magnitude =
     div [ class "filter-slider" ]
-        [ label [] [ text filterInfo.name ]
-        , paperSlider [ Attr.max "11", onImmediateValueChange (SetFilter filterInfo.type_) ] []
-        , label [] [ text (toString filterInfo.magnitude) ]
+        [ label [] [ text name ]
+        , paperSlider [ Attr.max "11", onImmediateValueChange toMsg ] []
+        , label [] [ text (toString magnitude) ]
         ]
 
 
@@ -114,14 +118,9 @@ type alias Model =
     , selectedUrl : Maybe String
     , loadingError : Maybe String
     , chosenSize : ThumbnailSize
-    , filters : List FilterInfo
-    }
-
-
-type alias FilterInfo =
-    { type_ : Filter
-    , name : String
-    , magnitude : Int
+    , hue : Int
+    , ripple : Int
+    , noise : Int
     }
 
 
@@ -131,11 +130,9 @@ initialModel =
     , selectedUrl = Nothing
     , loadingError = Nothing
     , chosenSize = Medium
-    , filters =
-        [ FilterInfo Hue "Hue" 0
-        , FilterInfo Ripple "Ripple" 0
-        , FilterInfo Noise "Noise" 0
-        ]
+    , hue = 0
+    , ripple = 0
+    , noise = 0
     }
 
 
@@ -154,22 +151,15 @@ getPhotoUrl index =
             Nothing
 
 
-type Filter
-    = Hue
-    | Noise
-    | Ripple
-
-
 type Msg
     = SelectByUrl String
     | SelectByIndex Int
     | SurpriseMe
     | SetSize ThumbnailSize
     | LoadPhotos (Result Http.Error (List Photo))
-      --| SetHue Int
-      --| SetRipple Int
-      --| SetNoise Int
-    | SetFilter Filter Int
+    | SetHue Int
+    | SetRipple Int
+    | SetNoise Int
 
 
 randomPhotoPicker : Random.Generator Int
@@ -177,22 +167,21 @@ randomPhotoPicker =
     Random.int 0 (Array.length photoArray - 1)
 
 
-updateFilterInfo : Filter -> Int -> FilterInfo -> FilterInfo
-updateFilterInfo filter magnitude filterInfo =
-    if filterInfo.type_ == filter then
-        { filterInfo | magnitude = magnitude }
-    else
-        filterInfo
-
-
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        SetFilter filter magnitude ->
-            ( { model
-                | filters =
-                    List.map (updateFilterInfo filter magnitude) model.filters
-              }
+        SetHue hue ->
+            ( { model | hue = hue }
+            , Cmd.none
+            )
+
+        SetRipple ripple ->
+            ( { model | ripple = ripple }
+            , Cmd.none
+            )
+
+        SetNoise noise ->
+            ( { model | noise = noise }
             , Cmd.none
             )
 
