@@ -9513,6 +9513,12 @@ var _user$project$PhotoGroove$onImmediateValueChange = function (toMsg) {
 				_elm_lang$core$Json_Decode$int)));
 };
 var _user$project$PhotoGroove$paperSlider = _elm_lang$html$Html$node('paper-slider');
+var _user$project$PhotoGroove$updateFilterInfo = F3(
+	function (filter, magnitude, filterInfo) {
+		return _elm_lang$core$Native_Utils.eq(filterInfo.type_, filter) ? _elm_lang$core$Native_Utils.update(
+			filterInfo,
+			{magnitude: magnitude}) : filterInfo;
+	});
 var _user$project$PhotoGroove$sizeToString = function (size) {
 	var _p0 = size;
 	switch (_p0.ctor) {
@@ -9724,11 +9730,7 @@ var _user$project$PhotoGroove$update = F2(
 			case 'SetFilter':
 				var newFilters = A2(
 					_elm_lang$core$List$map,
-					function (f) {
-						return _elm_lang$core$Native_Utils.eq(f.type_, _p3._0) ? _elm_lang$core$Native_Utils.update(
-							f,
-							{magnitude: _p3._1}) : f;
-					},
+					A2(_user$project$PhotoGroove$updateFilterInfo, _p3._0, _p3._1),
 					model.filters);
 				return {
 					ctor: '_Tuple2',

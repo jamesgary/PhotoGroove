@@ -177,20 +177,21 @@ randomPhotoPicker =
     Random.int 0 (Array.length photoArray - 1)
 
 
+updateFilterInfo : Filter -> Int -> FilterInfo -> FilterInfo
+updateFilterInfo filter magnitude filterInfo =
+    if filterInfo.type_ == filter then
+        { filterInfo | magnitude = magnitude }
+    else
+        filterInfo
+
+
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         SetFilter filter magnitude ->
             let
                 newFilters =
-                    List.map
-                        (\f ->
-                            if f.type_ == filter then
-                                { f | magnitude = magnitude }
-                            else
-                                f
-                        )
-                        model.filters
+                    List.map (updateFilterInfo filter magnitude) model.filters
             in
                 ( { model | filters = newFilters }, Cmd.none )
 
