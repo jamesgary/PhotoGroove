@@ -9728,15 +9728,16 @@ var _user$project$PhotoGroove$update = F2(
 		var _p3 = msg;
 		switch (_p3.ctor) {
 			case 'SetFilter':
-				var newFilters = A2(
-					_elm_lang$core$List$map,
-					A2(_user$project$PhotoGroove$updateFilterInfo, _p3._0, _p3._1),
-					model.filters);
 				return {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
 						model,
-						{filters: newFilters}),
+						{
+							filters: A2(
+								_elm_lang$core$List$map,
+								A2(_user$project$PhotoGroove$updateFilterInfo, _p3._0, _p3._1),
+								model.filters)
+						}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 			case 'SelectByIndex':

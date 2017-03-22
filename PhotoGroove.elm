@@ -189,11 +189,12 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         SetFilter filter magnitude ->
-            let
-                newFilters =
+            ( { model
+                | filters =
                     List.map (updateFilterInfo filter magnitude) model.filters
-            in
-                ( { model | filters = newFilters }, Cmd.none )
+              }
+            , Cmd.none
+            )
 
         SelectByIndex index ->
             let
