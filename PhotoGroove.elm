@@ -41,11 +41,7 @@ view model =
         , button
             [ onClick SurpriseMe ]
             [ text "Surprise Me!" ]
-        , div [ class "filters" ]
-            [ viewFilter "Hue" (SetFilter Hue) model.hue
-            , viewFilter "Ripple" (SetFilter Ripple) model.ripple
-            , viewFilter "Noise" (SetFilter Noise) model.noise
-            ]
+        , div [ class "filters" ] (List.map viewFilter model.filters)
         , h3 [] [ text "Thumbnail Size:" ]
         , div [ id "choose-size" ]
             (List.map viewSizeChooser [ Small, Medium, Large ])
@@ -55,12 +51,12 @@ view model =
         ]
 
 
-viewFilter : String -> (Int -> Msg) -> Int -> Html Msg
-viewFilter name toMsg magnitude =
+viewFilter : FilterInfo -> Html Msg
+viewFilter filterInfo =
     div [ class "filter-slider" ]
-        [ label [] [ text name ]
-        , paperSlider [ Attr.max "11", onImmediateValueChange toMsg ] []
-        , label [] [ text (toString magnitude) ]
+        [ label [] [ text filterInfo.name ]
+        , paperSlider [ Attr.max "11", onImmediateValueChange (SetFilter filterInfo.type_) ] []
+        , label [] [ text (toString filterInfo.magnitude) ]
         ]
 
 
@@ -118,9 +114,14 @@ type alias Model =
     , selectedUrl : Maybe String
     , loadingError : Maybe String
     , chosenSize : ThumbnailSize
-    , hue : Int
-    , ripple : Int
-    , noise : Int
+    , filters : List FilterInfo
+    }
+
+
+type alias FilterInfo =
+    { type_ : Filter
+    , name : String
+    , magnitude : Int
     }
 
 
@@ -130,9 +131,11 @@ initialModel =
     , selectedUrl = Nothing
     , loadingError = Nothing
     , chosenSize = Medium
-    , hue = 0
-    , ripple = 0
-    , noise = 0
+    , filters =
+        [ FilterInfo Hue "Hue" 0
+        , FilterInfo Ripple "Ripple" 0
+        , FilterInfo Noise "Noise" 0
+        ]
     }
 
 
@@ -178,34 +181,19 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         SetFilter filter magnitude ->
-            case filter of
-                Hue ->
-                    ( { model | hue = magnitude }
-                    , Cmd.none
-                    )
+            let
+                newFilters =
+                    List.map
+                        (\f ->
+                            if f.type_ == filter then
+                                { f | magnitude = magnitude }
+                            else
+                                f
+                        )
+                        model.filters
+            in
+                ( { model | filters = newFilters }, Cmd.none )
 
-                Ripple ->
-                    ( { model | ripple = magnitude }
-                    , Cmd.none
-                    )
-
-                Noise ->
-                    ( { model | noise = magnitude }
-                    , Cmd.none
-                    )
-
-        --SetHue hue ->
-        --    ( { model | hue = hue }
-        --    , Cmd.none
-        --    )
-        --SetRipple ripple ->
-        --    ( { model | ripple = ripple }
-        --    , Cmd.none
-        --    )
-        --SetNoise noise ->
-        --    ( { model | noise = noise }
-        --    , Cmd.none
-        --    )
         SelectByIndex index ->
             let
                 newSelectedUrl : Maybe String
